@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,9 +24,9 @@ public class ReleaseController {
     private ServiceService serviceService;
 
     @PostMapping("/create")
-    public String createRelease(@RequestParam String name,
+    public String createRelease(@RequestParam String name, @RequestParam String releaseDate,
                                 @RequestParam(required = false) List<UUID> serviceIds) {
-        releaseService.createRelease(name, serviceIds);
+        releaseService.createRelease(name, releaseDate,serviceIds);
         return "redirect:/releases";
     }
 

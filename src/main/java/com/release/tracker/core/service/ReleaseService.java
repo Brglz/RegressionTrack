@@ -7,8 +7,7 @@ import com.release.tracker.db.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,12 +34,11 @@ public class ReleaseService {
         return releaseRepository.findById(id).orElseThrow();
     }
 
-    public void createRelease(String name, List<UUID> serviceIds) {
+    public void createRelease(String name, String releaseDate, List<UUID> serviceIds) {
         Release release = new Release();
         release.setId(UUID.randomUUID());
         release.setName(name);
-        release.setStartDate(LocalDateTime.now());
-        release.setEndDate(LocalDateTime.now().plusDays(7));
+        release.setReleaseDate(LocalDate.parse(releaseDate));
         if (serviceIds != null) {
             List<ServiceEntity> services = serviceRepository.findAllById(serviceIds);
             services.forEach(service -> service.setRelease(release));

@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,7 +69,7 @@ public class ServiceService {
 
         TestSuite testSuite = new TestSuite();
         testSuite.setId(UUID.randomUUID());
-        testSuite.setName("Regression_" + LocalDateTime.now());
+        testSuite.setName("Regression_" + LocalDate.now());
         testSuite.setService(service);
         testSuite.setStatus(TestSuiteStatus.IN_PROGRESS);
         testSuiteRepository.save(testSuite);

@@ -13,8 +13,7 @@
         <thead class="table-dark">
         <tr>
             <th>Name</th>
-            <th>Start Date</th>
-            <th>End Date</th>
+            <th>Release Date</th>
             <th>Services</th>
             <th>Action</th>
         </tr>
@@ -22,8 +21,7 @@
         <tbody>
         <tr th:each="release : ${releases}" class="clickable-row" th:if="${release != null}">
             <td th:text="${release.name} ?: 'N/A'"></td>
-            <td th:text="${release.startDate != null} ? ${#temporals.format(release.startDate, 'yyyy-MM-dd HH:mm')} : 'N/A'"></td>
-            <td th:text="${release.endDate != null} ? ${#temporals.format(release.endDate, 'yyyy-MM-dd HH:mm')} : 'N/A'"></td>
+            <td th:text="${release.releaseDate != null} ? ${#temporals.format(release.releaseDate, 'dd-MM-yyyy')} : 'N/A'"></td>
             <td th:with="completed=${release.services != null} ? ${release.services.?[#this.status.name() == 'COMPLETED'].size()} : 0,
                              total=${release.services != null} ? ${release.services.size()} : 0,
                              serviceNames=${release.services != null and not #lists.isEmpty(release.services)} ? ${#strings.listJoin(release.services.![serviceName], ', ')} : 'None'"
@@ -54,6 +52,10 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="releaseDate" class="form-label">Name</label>
+                            <input type="date" class="form-control" id="releaseDate" name="releaseDate" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Services</label>
