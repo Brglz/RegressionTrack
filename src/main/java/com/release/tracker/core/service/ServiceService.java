@@ -3,17 +3,17 @@ package com.release.tracker.core.service;
 import com.release.tracker.core.enums.ServiceStatus;
 import com.release.tracker.core.enums.TestSuiteStatus;
 import com.release.tracker.db.entity.Release;
-import com.release.tracker.db.entity.TestSuite;
 import com.release.tracker.db.entity.ServiceEntity;
+import com.release.tracker.db.entity.TestSuite;
 import com.release.tracker.db.repository.ReleaseRepository;
 import com.release.tracker.db.repository.ServiceRepository;
-import com.release.tracker.db.repository.TestRepository;
 import com.release.tracker.db.repository.TestSuiteRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,6 +71,7 @@ public class ServiceService {
         TestSuite testSuite = new TestSuite();
         testSuite.setId(UUID.randomUUID());
         testSuite.setName("Regression_" + LocalDate.now());
+        testSuite.setStartDate(LocalDateTime.now());
         testSuite.setService(service);
         testSuite.setStatus(TestSuiteStatus.IN_PROGRESS);
         testSuiteRepository.save(testSuite);

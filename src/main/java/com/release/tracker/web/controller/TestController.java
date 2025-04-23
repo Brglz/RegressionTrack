@@ -1,8 +1,8 @@
 package com.release.tracker.web.controller;
 
-import com.release.tracker.db.entity.TestEntity;
 import com.release.tracker.core.enums.TestStatus;
 import com.release.tracker.core.service.TestService;
+import com.release.tracker.db.entity.TestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

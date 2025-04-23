@@ -60,6 +60,9 @@ databaseChangeLog:
               - column:
                   name: status
                   type: varchar(50)
+              - column:
+                  name: start_date
+                  type: datetime
         - createTable:
             tableName: test
             columns:
@@ -150,6 +153,9 @@ databaseChangeLog:
               - column:
                   name: status
                   value: "COMPLETED"
+              - column:
+                  name: start_date
+                  value: "2025-04-01 00:00:00"
         - insert:
             tableName: test
             columns:

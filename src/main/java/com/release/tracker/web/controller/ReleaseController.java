@@ -4,13 +4,11 @@ import com.release.tracker.core.service.ReleaseService;
 import com.release.tracker.core.service.ServiceService;
 import com.release.tracker.db.entity.Release;
 import com.release.tracker.db.entity.ServiceEntity;
-import com.release.tracker.db.entity.TestSuite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
