@@ -23,9 +23,9 @@ public class ReleaseController {
     private ServiceService serviceService;
 
     @PostMapping("/create")
-    public String createRelease(@RequestParam String name, @RequestParam String version,
+    public String createRelease(@RequestParam String name,
                                 @RequestParam(required = false) List<UUID> serviceIds) {
-        releaseService.createRelease(name, version, serviceIds);
+        releaseService.createRelease(name, serviceIds);
         return "redirect:/releases";
     }
 

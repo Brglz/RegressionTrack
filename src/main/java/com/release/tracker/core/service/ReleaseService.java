@@ -32,14 +32,13 @@ public class ReleaseService {
     }
 
     public Release getReleaseById(UUID id) {
-        return releaseRepository.findById(id).orElseThrow();//stel
+        return releaseRepository.findById(id).orElseThrow();
     }
 
-    public void createRelease(String name, String version, List<UUID> serviceIds) {
+    public void createRelease(String name, List<UUID> serviceIds) {
         Release release = new Release();
         release.setId(UUID.randomUUID());
         release.setName(name);
-        release.setVersion(version);
         release.setStartDate(LocalDateTime.now());
         release.setEndDate(LocalDateTime.now().plusDays(7));
         if (serviceIds != null) {

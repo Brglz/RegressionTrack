@@ -13,7 +13,6 @@
         <thead class="table-dark">
         <tr>
             <th>Name</th>
-            <th>Version</th>
             <th>Start Date</th>
             <th>End Date</th>
             <th>Services</th>
@@ -23,7 +22,6 @@
         <tbody>
         <tr th:each="release : ${releases}" class="clickable-row" th:if="${release != null}">
             <td th:text="${release.name} ?: 'N/A'"></td>
-            <td th:text="${release.version} ?: 'N/A'"></td>
             <td th:text="${release.startDate != null} ? ${#temporals.format(release.startDate, 'yyyy-MM-dd HH:mm')} : 'N/A'"></td>
             <td th:text="${release.endDate != null} ? ${#temporals.format(release.endDate, 'yyyy-MM-dd HH:mm')} : 'N/A'"></td>
             <td th:with="completed=${release.services != null} ? ${release.services.?[#this.status.name() == 'COMPLETED'].size()} : 0,
@@ -56,10 +54,6 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Name</label>
                             <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="version" class="form-label">Version</label>
-                            <input type="text" class="form-control" id="version" name="version" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Services</label>
