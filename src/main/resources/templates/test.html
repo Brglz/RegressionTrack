@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head>
+    <title>Tests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Tests for Test Suite</h1>
+    <form th:action="@{/test-suites/{id}/tests(id=${testSuite.id})}" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search tests..." th:value="${search}">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a th:href="@{/test-suites/{id}/tests(id=${testSuite.id})}" class="btn btn-secondary">Clear</a>
+        </div>
+    </form>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="test : ${tests}">
+            <td th:text="${test.name}"></td>
+            <td>
+                <form th:action="@{/api/tests/{id}/status(id=${test.id})}" method="post">
+                    <select name="status" class="form-select" th:class="${test.status.toString().toLowerCase()}" onchange="this.form.submit()">
+                        <option th:each="status : ${T(com.release.tracker.core.enums.TestStatus).values()}"
+                                th:value="${status}" th:text="${status}"
+                                th:selected="${test.status == status}"></option>
+                    </select>
+                </form>
+            </td>
+            <td>
+                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" th:attr="data-bs-target='#testModal-' + ${test.id}">Details</button>
+            </td>
+        </tr>
+        <tr th:if="${tests == null or #lists.isEmpty(tests)}">
+            <td colspan="3">No tests found.</td>
+        </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/services/{id}/test-suites(id=${testSuite.service.id})}" class="btn btn-secondary mt-3">Back to Test Suites</a>
+
+    <!-- Test Details Modal -->
+    <div th:each="test : ${tests}" class="modal fade" th:id="'testModal-' + ${test.id}" tabindex="-1" th:attr="aria-labelledby='testModalLabel-' + ${test.id}" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:id="'testModalLabel-' + ${test.id}" th:text="'Test Details: ' + ${test.name}"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Test Name:</label>
+                            <p th:text="${test.name}"></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Status:</label>
+                            <form th:action="@{/api/tests/{id}/status(id=${test.id})}" method="post">
+                                <select name="status" class="form-select" th:class="${test.status.toString().toLowerCase()}" onchange="this.form.submit()">
+                                    <option th:each="status : ${T(com.release.tracker.core.enums.TestStatus).values()}"
+                                            th:value="${status}" th:text="${status}"
+                                            th:selected="${test.status == status}"></option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Description:</label>
+                        <div class="description-container" th:utext="${test.description != null ? test.description.replace('\n', '<br>') : 'N/A'}"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selects = document.querySelectorAll('select');
+        selects.forEach(select => {
+            select.className = select.value.toLowerCase();
+            select.addEventListener('change', function() {
+                select.className = select.value.toLowerCase();
+            });
+        });
+    });
+</script>
+</body>
+</html>

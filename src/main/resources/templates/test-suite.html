@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test Suites</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Test Suites for Service: <span th:text="${service.serviceName}"></span></h1>
+    <table class="table table-striped table-hover" id="test-suites-table">
+        <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Passed/Mitigated</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="testSuite : ${testSuites}">
+            <td th:text="${testSuite.name}"></td>
+            <td th:with="passed=${testSuite.tests != null ? testSuite.tests.?[#this.status.name() == 'PASSED'].size() : 0},
+                         mitigated=${testSuite.tests != null ? testSuite.tests.?[#this.status.name() == 'MITIGATED'].size() : 0},
+                         total=${testSuite.tests != null ? testSuite.tests.size() : 0}"
+                th:text="${passed + mitigated} + '/' + ${total}"></td>
+            <td>
+                <form th:action="@{/api/test-suites/{id}/status(id=${testSuite.id})}" method="post" onclick="event.stopPropagation()">
+                    <select name="status" th:class="${testSuite.status.toString().toLowerCase()}" onchange="this.form.submit()">
+                        <option th:each="status : ${T(com.release.tracker.core.enums.TestSuiteStatus).values()}"
+                                th:value="${status}" th:text="${status}"
+                                th:selected="${testSuite.status == status}"></option>
+                    </select>
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/test-suites/{id}/tests(id=${testSuite.id})}" class="btn btn-primary btn-sm">View Tests</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success mt-3" id="run-regression-btn" th:attr="data-url=|/services/${service.id}/run-regression|">Run New Regression</button>
+    <a th:href="@{/releases}" class="btn btn-secondary mt-3">Back to Releases</a>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const runButton = document.querySelector('#run-regression-btn');
+        if (runButton) {
+            runButton.addEventListener('click', function () {
+                const url = this.getAttribute('data-url');
+                console.log('Navigating to:', url);
+                // Trigger regression run
+                fetch(url, { method: 'GET' })
+                    .then(response => {
+                        if (response.ok) {
+                            // Start polling for updates
+                            startPolling();
+                        }
+                    })
+                    .catch(error => console.error('Error running regression:', error));
+            });
+        }
+
+        function startPolling() {
+            const tableBody = document.querySelector('#test-suites-table tbody');
+            let pollCount = 0;
+            const maxPolls = 10; // Poll for ~10 seconds
+
+            const poll = setInterval(() => {
+                fetch(window.location.href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(response => response.text())
+                    .then(html => {
+                        // Parse the response HTML and update table body
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const newTableBody = doc.querySelector('#test-suites-table tbody');
+                        tableBody.innerHTML = newTableBody.innerHTML;
+                        pollCount++;
+                        if (pollCount >= maxPolls) {
+                            clearInterval(poll);
+                        }
+                    })
+                    .catch(error => console.error('Error polling:', error));
+            }, 1000); // Poll every second
+        }
+    });
+</script>
+</body>
+</html>

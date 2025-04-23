@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Services for Release</h1>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+        <tr>
+            <th>Service Name</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="service : ${services}">
+            <td th:text="${service.serviceName}"></td>
+            <td>
+                <form th:action="@{/api/services/{id}/status(id=${service.id})}" method="post">
+                    <select name="status" onchange="this.form.submit()" th:class="${service.status.toString().toLowerCase()}">
+                        <option th:each="status : ${T(com.release.tracker.core.enums.ServiceStatus).values()}"
+                                th:value="${status}" th:text="${status}"
+                                th:selected="${service.status == status}"></option>
+                    </select>
+                </form>
+            </td>
+            <td>
+                <a th:href="@{/services/{id}/test-suites(id=${service.id})}" class="btn btn-primary btn-sm">View Test Suites</a>
+            </td>
+        </tr>
+        <tr th:if="${services == null or #lists.isEmpty(services)}">
+            <td colspan="3">No services found.</td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addServicesModal">Add Services</button>
+    <a th:href="@{/releases}" class="btn btn-secondary mt-3">Back to Releases</a>
+
+    <!-- Add Services Modal -->
+    <div class="modal fade" id="addServicesModal" tabindex="-1" aria-labelledby="addServicesModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addServicesModalLabel">Add Services to Release</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/releases/{id}/add-services(id=${releaseId})}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Select Services</label>
+                            <div th:each="service : ${allServices}">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" th:id="'service-' + ${service.id}" th:name="serviceIds" th:value="${service.id}">
+                                    <label class="form-check-label" th:for="'service-' + ${service.id}" th:text="${service.serviceName}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Selected Services</button>
+                        <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#createServiceModal" data-bs-dismiss="modal">Create New Service</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Service Modal -->
+    <div class="modal fade" id="createServiceModal" tabindex="-1" aria-labelledby="createServiceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createServiceModalLabel">Create New Service</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form th:action="@{/services/create-for-release/{id}(id=${releaseId})}" method="post">
+                        <div class="mb-3">
+                            <label for="serviceName" class="form-label">Service Name</label>
+                            <input type="text" class="form-control" id="serviceName" name="serviceName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="PENDING">PENDING</option>
+                                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                                <option value="COMPLETED">COMPLETED</option>
+                                <option value="FAILED">FAILED</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Service</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelector('[data-bs-target="#addServicesModal"]').addEventListener('click', function () {
+            console.log('Add Services button clicked');
+        });
+    });
+</script>
+</body>
+</html>

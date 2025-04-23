@@ -1,0 +1,149 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+h1 {
+    color: #343a40;
+    margin-bottom: 1.5rem;
+}
+
+.table {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-hover tbody tr:hover {
+    background-color: #e9ecef;
+}
+
+.table-dark th {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.form-select {
+    width: 150px;
+}
+
+.btn-secondary {
+    margin-top: 1rem;
+}
+
+/* Tooltip styling */
+[data-bs-toggle="tooltip"] {
+    position: relative;
+    cursor: pointer;
+}
+
+[data-bs-toggle="tooltip"]:hover::after {
+    content: attr(data-bs-title);
+    position: absolute;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #343a40;
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+/* src/main/resources/static/css/style.css */
+
+select {
+    border-radius: 8px;
+    padding: 8px 12px;
+    border: 1px solid #ced4da;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    width: 45%;
+    max-width: 180px;
+    min-width: 160px;
+}
+
+select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+/* Color the select element based on selected value */
+select.passed, select.completed {
+    background-color: #e6f4ea;
+    color: #28a745;
+    border-color: #28a745;
+}
+
+select.failed {
+    background-color: #f8d7da;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+select.pending {
+    background-color: #e7f1ff;
+    color: #007bff;
+    border-color: #007bff;
+}
+
+select.in_progress, select.mitigated {
+    background-color: #fff3cd;
+    color: #ffc107;
+    border-color: #ffc107;
+}
+
+select option {
+    background-color: #fff;
+    color: #000;
+    padding: 5px;
+}
+
+/* Style options for consistency */
+select option[value="PASSED"],
+select option[value="COMPLETED"] {
+    color: #28a745;
+}
+
+select option[value="FAILED"] {
+    color: #dc3545;
+}
+
+select option[value="PENDING"] {
+    color: #007bff;
+}
+
+select option[value="IN_PROGRESS"],
+select option[value="MITIGATED"] {
+    color: #ffc107;
+}
+
+.description-container {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.6;
+}
