@@ -6,7 +6,10 @@ import com.release.tracker.db.repository.TestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TestService {
@@ -23,4 +26,30 @@ public class TestService {
         test.setStatus(status);
         testRepository.save(test);
     }
+
+    public List<TestEntity> getTestsByTestSuiteId(UUID suiteId, String search, String status, String sort) {
+        List<TestEntity> tests = testRepository.findByTestSuiteId(suiteId);
+
+        if (search != null && !search.isBlank()) {
+            tests = tests.stream()
+                    .filter(test -> test.getName().toLowerCase().contains(search.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        if (status != null && !status.isBlank()) {
+            tests = tests.stream()
+                    .filter(test -> test.getStatus().name().equalsIgnoreCase(status))
+                    .collect(Collectors.toList());
+        }
+
+        Comparator<TestEntity> comparator = Comparator.comparing(TestEntity::getStatus);
+        if ("desc".equalsIgnoreCase(sort)) {
+            comparator = comparator.reversed();
+        }
+        tests.sort(comparator);
+
+        return tests;
+    }
+
+
 }

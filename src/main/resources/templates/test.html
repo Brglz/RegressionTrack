@@ -11,9 +11,22 @@
 <div class="container mt-4">
     <h1>Tests for Test Suite</h1>
     <form th:action="@{/test-suites/{id}/tests(id=${testSuite.id})}" method="get" class="mb-3">
-        <div class="input-group">
+        <div class="input-group mb-2">
             <input type="text" name="search" class="form-control" placeholder="Search tests..." th:value="${search}">
-            <button type="submit" class="btn btn-primary">Search</button>
+
+            <select name="status" class="form-select">
+                <option value="">All</option>
+                <option th:each="s : ${T(com.release.tracker.core.enums.TestStatus).values()}"
+                        th:value="${s}" th:text="${s}"
+                        th:selected="${s.name() == selectedStatus}"></option>
+            </select>
+
+            <select name="sort" class="form-select">
+                <option value="asc" th:selected="${sortDirection == 'asc'}">Sort ↑</option>
+                <option value="desc" th:selected="${sortDirection == 'desc'}">Sort ↓</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Filter</button>
             <a th:href="@{/test-suites/{id}/tests(id=${testSuite.id})}" class="btn btn-secondary">Clear</a>
         </div>
     </form>
