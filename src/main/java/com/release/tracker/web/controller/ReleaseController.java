@@ -5,6 +5,7 @@ import com.release.tracker.core.service.ServiceService;
 import com.release.tracker.db.entity.Release;
 import com.release.tracker.db.entity.ServiceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -48,13 +49,16 @@ public class ReleaseController {
 
     @GetMapping
     public ModelAndView getAllReleases(@RequestParam(required = false) String search,
-                                       @RequestParam(required = false) String sort) {
-        List<Release> releases = releaseService.getAllReleases(search, sort);
+                                       @RequestParam(required = false) String sort,
+                                       @RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "10") int size) {
+        Page<Release> releasesPage = releaseService.getAllReleases(search, sort, page, size);
 
         ModelAndView modelAndView = new ModelAndView("releases");
-        modelAndView.addObject("releases", releases);
+        modelAndView.addObject("releases", releasesPage.getContent());
         modelAndView.addObject("search", search);
         modelAndView.addObject("sort", sort);
+        modelAndView.addObject("page", releasesPage);
         return modelAndView;
     }
 

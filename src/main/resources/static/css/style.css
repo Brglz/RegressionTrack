@@ -37,7 +37,11 @@ h1 {
 }
 
 .btn-secondary {
-    margin-top: 1rem;
+    margin-top: 0 !important;
+}
+
+.no-margin-top {
+    margin-top: 0 !important;
 }
 
 /* Tooltip styling */

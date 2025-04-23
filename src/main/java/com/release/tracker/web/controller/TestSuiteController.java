@@ -35,9 +35,12 @@ public class TestSuiteController {
             @PathVariable UUID id,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false, defaultValue = "asc") String sort) {
+            @RequestParam(required = false, defaultValue = "asc") String sort,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int size) {
 
-        List<TestEntity> tests = testService.getTestsByTestSuiteId(id, search, status, sort);
+        List<TestEntity> tests = testService.getTestsByTestSuiteId(id, search, status, sort, page, size);
+        int totalTests = testService.getTotalTestsCount(id, search, status);
 
         ModelAndView modelAndView = new ModelAndView("test");
         modelAndView.addObject("tests", tests);
@@ -45,7 +48,10 @@ public class TestSuiteController {
         modelAndView.addObject("search", search);
         modelAndView.addObject("status", status);
         modelAndView.addObject("sort", sort);
+        modelAndView.addObject("currentPage", page);
+        modelAndView.addObject("totalPages", (int) Math.ceil((double) totalTests / size));
 
         return modelAndView;
     }
+
 }

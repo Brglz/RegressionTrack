@@ -41,8 +41,10 @@
         </tr>
         </tbody>
     </table>
-    <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#createServiceModal">Add Services</button>
-    <a th:href="@{/releases?search=&sort=desc}" class="btn btn-secondary mt-3">Back to Releases</a>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <a th:href="@{/releases?search=&sort=desc}" class="btn btn-secondary mt-3 no-margin-top">Back to Releases</a>
+        <button type="button" class="btn btn-success mt-3 no-margin-top" data-bs-toggle="modal" data-bs-target="#createServiceModal">Add Services</button>
+    </div>
 
     <!-- Create Service Modal -->
     <div class="modal fade" id="createServiceModal" tabindex="-1" aria-labelledby="createServiceModalLabel" aria-hidden="true">
@@ -50,7 +52,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createServiceModalLabel">Create New Service</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close no-margin-top" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form th:action="@{/services/create-for-release/{id}(id=${releaseId})}" method="post">
@@ -71,7 +73,7 @@
                                 <option value="FAILED">FAILED</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Create Service</button>
+                        <button type="submit" class="btn btn-primary no-margin-top">Create Service</button>
                     </form>
                 </div>
             </div>

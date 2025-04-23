@@ -27,7 +27,7 @@ public class TestService {
         testRepository.save(test);
     }
 
-    public List<TestEntity> getTestsByTestSuiteId(UUID suiteId, String search, String status, String sort) {
+    public List<TestEntity> getTestsByTestSuiteId(UUID suiteId, String search, String status, String sort, int page, int size) {
         List<TestEntity> tests = testRepository.findByTestSuiteId(suiteId);
 
         // Apply search filter
@@ -44,7 +44,7 @@ public class TestService {
                     .collect(Collectors.toList());
         }
 
-        // Comparator for sorting by status
+        // Apply sorting
         Comparator<TestEntity> comparator = Comparator.comparing(test -> {
             switch (test.getStatus()) {
                 case FAILED: return 0;
@@ -59,12 +59,33 @@ public class TestService {
             comparator = comparator.reversed();
         }
 
-        // Apply the comparator to the list
+        // Sort the tests
         tests.sort(comparator);
 
-        return tests;
+        // Implement pagination
+        int start = page * size;
+        int end = Math.min(start + size, tests.size());
+
+        return tests.subList(start, end); // Return only the page of results
     }
 
+    public int getTotalTestsCount(UUID suiteId, String search, String status) {
+        List<TestEntity> tests = testRepository.findByTestSuiteId(suiteId);
 
+        // Apply search filter
+        if (search != null && !search.isBlank()) {
+            tests = tests.stream()
+                    .filter(test -> test.getName().toLowerCase().contains(search.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
 
+        // Apply status filter
+        if (status != null && !status.isBlank()) {
+            tests = tests.stream()
+                    .filter(test -> test.getStatus().name().equalsIgnoreCase(status))
+                    .collect(Collectors.toList());
+        }
+
+        return tests.size();
+    }
 }

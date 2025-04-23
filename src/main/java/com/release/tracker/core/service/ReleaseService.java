@@ -5,10 +5,13 @@ import com.release.tracker.db.entity.ServiceEntity;
 import com.release.tracker.db.repository.ReleaseRepository;
 import com.release.tracker.db.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,22 +24,15 @@ public class ReleaseService {
     @Autowired
     private ServiceRepository serviceRepository;
 
-    public List<Release> getAllReleases(String search, String sort) {
-        List<Release> releases = releaseRepository.findAll();
+    public Page<Release> getAllReleases(String search, String sort, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size,
+                "asc".equalsIgnoreCase(sort) ? Sort.by("releaseDate").ascending() : Sort.by("releaseDate").descending());
 
         if (search != null && !search.isBlank()) {
-            releases = releases.stream()
-                    .filter(r -> r.getName() != null && r.getName().toLowerCase().contains(search.toLowerCase()))
-                    .toList();
+            return releaseRepository.findByNameContainingIgnoreCase(search, pageable);
         }
 
-        if ("asc".equalsIgnoreCase(sort)) {
-            releases.sort(Comparator.comparing(Release::getReleaseDate));
-        } else if ("desc".equalsIgnoreCase(sort)) {
-            releases.sort(Comparator.comparing(Release::getReleaseDate).reversed());
-        }
-
-        return releases;
+        return releaseRepository.findAll(pageable);
     }
 
     public List<ServiceEntity> getServicesByRelease(UUID releaseId) {

@@ -52,7 +52,7 @@ public class RegressionSimulatorService {
             TestStatus[] statuses = {PASSED, FAILED};
             boolean hasFailed = false;
 
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= 30; i++) {
                 TestEntity test = new TestEntity();
                 test.setId(UUID.randomUUID());
                 test.setName("Test_" + i);

@@ -49,8 +49,11 @@
         </tr>
         </tbody>
     </table>
-    <button type="button" class="btn btn-success mt-3" id="run-regression-btn" th:attr="data-url=|/services/${service.id}/run-regression|">Run New Regression</button>
-    <a th:href="@{/releases?search=&sort=desc}" class="btn btn-secondary mt-3">Back to Releases</a>
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <a th:href="@{/releases?search=&sort=desc}" class="btn btn-secondary mt-3 no-margin-top">Back to Releases</a>
+        <button type="button" class="btn btn-success mt-3 no-margin-top" id="run-regression-btn" th:attr="data-url=|/services/${service.id}/run-regression|">Run New Regression</button>
+    </div>
+
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
