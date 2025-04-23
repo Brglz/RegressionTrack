@@ -14,7 +14,13 @@
         <thead class="table-dark">
         <tr>
             <th>Name</th>
-            <th>Start Date</th>
+            <th>
+                <a th:href="@{/services/{id}/test-suites(id=${service.id}, sort=${sort == 'asc' ? 'desc' : 'asc'})}" class="text-white text-decoration-none">
+                    Start Date
+                    <span th:if="${sort == null || sort == 'desc'}">&#9660;</span>
+                    <span th:if="${sort == 'asc'}">&#9650;</span>
+                </a>
+            </th>
             <th>Passed/Mitigated</th>
             <th>Status</th>
             <th>Action</th>
@@ -44,7 +50,7 @@
         </tbody>
     </table>
     <button type="button" class="btn btn-success mt-3" id="run-regression-btn" th:attr="data-url=|/services/${service.id}/run-regression|">Run New Regression</button>
-    <a th:href="@{/releases}" class="btn btn-secondary mt-3">Back to Releases</a>
+    <a th:href="@{/releases?search=&sort=desc}" class="btn btn-secondary mt-3">Back to Releases</a>
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function () {

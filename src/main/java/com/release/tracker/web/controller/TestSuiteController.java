@@ -31,21 +31,21 @@ public class TestSuiteController {
     }
 
     @GetMapping("/{id}/tests")
-    public ModelAndView getTests(@PathVariable UUID id,
-                                 @RequestParam(required = false) String search,
-                                 @RequestParam(required = false) String status,
-                                 @RequestParam(required = false, defaultValue = "asc") String sort) {
-        ModelAndView mav = new ModelAndView("test");
+    public ModelAndView getTestsByTestSuiteFilteredAndSorted(
+            @PathVariable UUID id,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false, defaultValue = "asc") String sort) {
 
-        TestSuite testSuite = testSuiteService.getTestSuiteById(id);
-        List<TestEntity> filteredTests = testService.getTestsByTestSuiteId(id, search, status, sort);
+        List<TestEntity> tests = testService.getTestsByTestSuiteId(id, search, status, sort);
 
-        mav.addObject("testSuite", testSuite);
-        mav.addObject("tests", filteredTests);
-        mav.addObject("search", search);
-        mav.addObject("selectedStatus", status);
-        mav.addObject("sortDirection", sort);
+        ModelAndView modelAndView = new ModelAndView("test");
+        modelAndView.addObject("tests", tests);
+        modelAndView.addObject("testSuite", testSuiteService.getTestSuiteById(id));
+        modelAndView.addObject("search", search);
+        modelAndView.addObject("status", status);
+        modelAndView.addObject("sort", sort);
 
-        return mav;
+        return modelAndView;
     }
 }

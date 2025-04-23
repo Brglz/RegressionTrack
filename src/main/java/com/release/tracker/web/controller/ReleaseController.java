@@ -25,22 +25,11 @@ public class ReleaseController {
     public String createRelease(@RequestParam String name, @RequestParam String releaseDate,
                                 @RequestParam(required = false) List<UUID> serviceIds) {
         releaseService.createRelease(name, releaseDate,serviceIds);
-        return "redirect:/releases";
-    }
-
-    @GetMapping
-    public ModelAndView getAllReleases() {
-        List<Release> releases = releaseService.getAllReleases();
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("releases", releases);
-        modelAndView.setViewName("releases");
-
-        return modelAndView;
+        return "redirect:/releases?search=&sort=desc";
     }
 
     @GetMapping("/{id}/services")
-    public ModelAndView getServicesByRelease(@PathVariable UUID id) {
+    public ModelAndView getServicesByRelease(@PathVariable UUID id, @RequestParam(defaultValue = "asc") String sort) {
         List<ServiceEntity> services = releaseService.getServicesByRelease(id);
 
         ModelAndView modelAndView = new ModelAndView();
@@ -55,6 +44,18 @@ public class ReleaseController {
     public String addServicesToRelease(@PathVariable UUID id, @RequestParam(required = false) List<UUID> serviceIds) {
         releaseService.addServicesToRelease(id, serviceIds);
         return "redirect:/releases/" + id + "/services";
+    }
+
+    @GetMapping
+    public ModelAndView getAllReleases(@RequestParam(required = false) String search,
+                                       @RequestParam(required = false) String sort) {
+        List<Release> releases = releaseService.getAllReleases(search, sort);
+
+        ModelAndView modelAndView = new ModelAndView("releases");
+        modelAndView.addObject("releases", releases);
+        modelAndView.addObject("search", search);
+        modelAndView.addObject("sort", sort);
+        return modelAndView;
     }
 
 }

@@ -24,17 +24,18 @@ public class ServiceController {
 
     @GetMapping({"/", ""})
     public String redirectToReleases() {
-        return "redirect:/releases";
+        return "redirect:/releases?search=&sort=desc";
     }
 
     @GetMapping("services/{id}/test-suites")
-    public ModelAndView getTestSuitesByService(@PathVariable UUID id) {
-        List<TestSuite> testSuites = serviceService.getTestSuitesByService(id);
+    public ModelAndView getTestSuitesByService(@PathVariable UUID id, @RequestParam(defaultValue = "desc") String sort) {
+        List<TestSuite> testSuites = serviceService.getTestSuitesByService(id, sort);
         ServiceEntity service = serviceService.getServiceById(id);
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("testSuites", testSuites);
         modelAndView.addObject("service", service);
+        modelAndView.addObject("sort", sort);
         modelAndView.setViewName("test-suite");
 
         return modelAndView;

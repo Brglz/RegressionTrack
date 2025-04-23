@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,10 +37,16 @@ public class ServiceService {
         this.regressionSimulatorService = regressionSimulatorService;
     }
 
-    public List<TestSuite> getTestSuitesByService(UUID serviceId) {
-        return serviceRepository.findById(serviceId)
-                .map(ServiceEntity::getTestSuites)
-                .orElse(List.of());
+    public List<TestSuite> getTestSuitesByService(UUID serviceId, String sort) {
+        List<TestSuite> testSuites = testSuiteRepository.findByServiceId(serviceId);
+
+        if ("asc".equalsIgnoreCase(sort)) {
+            testSuites.sort(Comparator.comparing(TestSuite::getStartDate));
+        } else if ("desc".equalsIgnoreCase(sort)) {
+            testSuites.sort(Comparator.comparing(TestSuite::getStartDate).reversed());
+        }
+
+        return testSuites;
     }
 
     public ServiceEntity getServiceById(UUID id) {

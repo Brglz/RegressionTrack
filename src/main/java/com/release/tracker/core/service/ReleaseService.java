@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,8 +21,22 @@ public class ReleaseService {
     @Autowired
     private ServiceRepository serviceRepository;
 
-    public List<Release> getAllReleases() {
-        return releaseRepository.findAll();
+    public List<Release> getAllReleases(String search, String sort) {
+        List<Release> releases = releaseRepository.findAll();
+
+        if (search != null && !search.isBlank()) {
+            releases = releases.stream()
+                    .filter(r -> r.getName() != null && r.getName().toLowerCase().contains(search.toLowerCase()))
+                    .toList();
+        }
+
+        if ("asc".equalsIgnoreCase(sort)) {
+            releases.sort(Comparator.comparing(Release::getReleaseDate));
+        } else if ("desc".equalsIgnoreCase(sort)) {
+            releases.sort(Comparator.comparing(Release::getReleaseDate).reversed());
+        }
+
+        return releases;
     }
 
     public List<ServiceEntity> getServicesByRelease(UUID releaseId) {

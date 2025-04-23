@@ -42,7 +42,7 @@
         </tbody>
     </table>
     <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#createServiceModal">Add Services</button>
-    <a th:href="@{/releases}" class="btn btn-secondary mt-3">Back to Releases</a>
+    <a th:href="@{/releases?search=&sort=desc}" class="btn btn-secondary mt-3">Back to Releases</a>
 
     <!-- Create Service Modal -->
     <div class="modal fade" id="createServiceModal" tabindex="-1" aria-labelledby="createServiceModalLabel" aria-hidden="true">
@@ -78,12 +78,5 @@
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelector('[data-bs-target="#addServicesModal"]').addEventListener('click', function () {
-            console.log('Add Services button clicked');
-        });
-    });
-</script>
 </body>
 </html>
