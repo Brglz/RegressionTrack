@@ -40,35 +40,8 @@
         </tr>
         </tbody>
     </table>
-    <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addServicesModal">Add Services</button>
+    <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#createServiceModal">Add Services</button>
     <a th:href="@{/releases}" class="btn btn-secondary mt-3">Back to Releases</a>
-
-    <!-- Add Services Modal -->
-    <div class="modal fade" id="addServicesModal" tabindex="-1" aria-labelledby="addServicesModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addServicesModalLabel">Add Services to Release</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form th:action="@{/releases/{id}/add-services(id=${releaseId})}" method="post">
-                        <div class="mb-3">
-                            <label class="form-label">Select Services</label>
-                            <div th:each="service : ${allServices}">
-                                <div class="form-check">
-                                    <input type="checkbox" class="form-check-input" th:id="'service-' + ${service.id}" th:name="serviceIds" th:value="${service.id}">
-                                    <label class="form-check-label" th:for="'service-' + ${service.id}" th:text="${service.serviceName}"></label>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Add Selected Services</button>
-                        <button type="button" class="btn btn-secondary mt-2" data-bs-toggle="modal" data-bs-target="#createServiceModal" data-bs-dismiss="modal">Create New Service</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Create Service Modal -->
     <div class="modal fade" id="createServiceModal" tabindex="-1" aria-labelledby="createServiceModalLabel" aria-hidden="true">
@@ -83,6 +56,10 @@
                         <div class="mb-3">
                             <label for="serviceName" class="form-label">Service Name</label>
                             <input type="text" class="form-control" id="serviceName" name="serviceName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="version" class="form-label">Version</label>
+                            <input type="text" class="form-control" id="version" name="version" required>
                         </div>
                         <div class="mb-3">
                             <label for="status" class="form-label">Status</label>

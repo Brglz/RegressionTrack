@@ -32,8 +32,9 @@ public class ServiceController {
     }
 
     @PostMapping("services/create-for-release/{id}")
-    public String createServiceForRelease(@PathVariable UUID id, @RequestParam String serviceName, @RequestParam String status) {
-        serviceService.createServiceForRelease(id, serviceName, status);
+    public String createServiceForRelease(@PathVariable UUID id, @RequestParam String serviceName,
+                                          @RequestParam String version, @RequestParam String status) {
+        serviceService.createServiceForRelease(id, serviceName, version, status);
         return "redirect:/releases/" + id + "/services";
     }
 

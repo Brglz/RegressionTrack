@@ -11,10 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
+import static com.release.tracker.core.enums.TestStatus.FAILED;
+import static com.release.tracker.core.enums.TestStatus.PASSED;
+import static com.release.tracker.core.enums.TestSuiteStatus.COMPLETED;
 
 @Service
 public class RegressionSimulatorService {
@@ -45,7 +50,7 @@ public class RegressionSimulatorService {
                     .orElseThrow(() -> new IllegalArgumentException("Test suite not found"));
 
             Random random = new Random();
-            TestStatus[] statuses = TestStatus.values();
+            TestStatus[] statuses = {PASSED, FAILED};
             boolean hasFailed = false;
 
             for (int i = 1; i <= 5; i++) {
@@ -54,7 +59,7 @@ public class RegressionSimulatorService {
                 test.setName("Test_" + i);
                 TestStatus status = statuses[random.nextInt(statuses.length)];
                 test.setStatus(status);
-                if (status == TestStatus.FAILED) {
+                if (status == FAILED) {
                     hasFailed = true;
                     test.setDescription(ERROR_MESSAGES.get(random.nextInt(ERROR_MESSAGES.size())));
                 }
@@ -62,7 +67,7 @@ public class RegressionSimulatorService {
                 testRepository.save(test);
             }
 
-            testSuite.setStatus(hasFailed ? TestSuiteStatus.FAILED : TestSuiteStatus.COMPLETED);
+            testSuite.setStatus(hasFailed ? TestSuiteStatus.FAILED : COMPLETED);
             testSuiteRepository.save(testSuite);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

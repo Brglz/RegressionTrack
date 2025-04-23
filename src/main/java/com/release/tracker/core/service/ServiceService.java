@@ -51,12 +51,13 @@ public class ServiceService {
         return serviceRepository.findAll();
     }
 
-    public void createServiceForRelease(UUID releaseId, String serviceName, String status) {
+    public void createServiceForRelease(UUID releaseId, String serviceName, String version, String status) {
         Release release = releaseRepository.findById(releaseId)
                 .orElseThrow(() -> new IllegalArgumentException("Release not found"));
         ServiceEntity service = new ServiceEntity();
         service.setId(UUID.randomUUID());
         service.setServiceName(serviceName);
+        service.setVersion(version);
         service.setStatus(ServiceStatus.valueOf(status));
         service.setRelease(release);
         serviceRepository.save(service);
