@@ -28,10 +28,18 @@ public class TestController {
     }
 
     @PostMapping("/mark-flaky")
-    public String markFlakyTests(@RequestParam UUID serviceId) {
+    public String markFlakyTests(@RequestParam UUID serviceId, @RequestParam UUID testSuiteId) {
         testService.markFlakyTests(serviceId);
 
-        return "redirect:/services/" + serviceId + "/test-suites";
+        return "redirect:/test-suites/" + testSuiteId + "/tests";
+    }
+
+    @PostMapping("/check-last-successful-run")
+    public String checkLastSuccessfulRUn(@RequestParam String serviceName, @RequestParam String testSuiteName) {
+        testService.getLast3SuccessfulTests(serviceName, testSuiteName);
+
+        // Finish the method
+        return "";
     }
 
 }

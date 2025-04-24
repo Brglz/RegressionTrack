@@ -3,6 +3,7 @@
 <head>
     <title>Tests</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link th:href="@{/css/style.css}" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
@@ -20,17 +21,29 @@
                 <button type="submit" class="btn btn-primary">Search</button>
             </div>
         </form>
-        <div class="row mb-4">
+        <div class="row mb-4 align-items-center">
             <div class="col-auto">
                 <select id="status-filter" class="form-select">
-                    <option value="">All Status</option>
+                    <option value="" th:selected="${status == null or status == ''}">All Status</option>
                     <option value="PASSED" th:selected="${status == 'PASSED'}">PASSED</option>
                     <option value="FAILED" th:selected="${status == 'FAILED'}">FAILED</option>
                     <option value="MITIGATED" th:selected="${status == 'MITIGATED'}">MITIGATED</option>
                 </select>
             </div>
+            <div class="col-auto">
+                <form th:action="@{/api/tests/mark-flaky}" method="post" class="d-inline">
+                    <input type="hidden" name="serviceId" th:value="${serviceId}"/>
+                    <input type="hidden" name="testSuiteId" th:value="${testSuite.id}"/>
+                    <button type="submit" class="btn btn-warning">Check for Flaky Tests</button>
+                </form>
+            </div>
+            <div class="col-auto">
+                <div class="form-check form-switch">
+                    <input type="checkbox" class="form-check-input" id="excludeFlaky" name="excludeFlaky" th:checked="${excludeFlaky}" onchange="updateExcludeFlaky(this)" role="switch">
+                    <label class="form-check-label" for="excludeFlaky">Hide Flaky Tests</label>
+                </div>
+            </div>
         </div>
-
     </div>
 
     <table class="table table-striped table-hover">
@@ -50,7 +63,10 @@
         </thead>
         <tbody>
         <tr th:each="test : ${tests}">
-            <td th:text="${test.name}"></td>
+            <td>
+                <span th:text="${test.name}"></span>
+                <i th:if="${test.isFlaky()}" class="bi bi-exclamation-triangle-fill text-warning ms-2" title="Flaky Test"></i>
+            </td>
             <td>
                 <form th:action="@{/api/tests/{id}/status(id=${test.id})}" method="post">
                     <select name="status" class="form-select" th:class="${test.status.toString().toLowerCase()}" onchange="this.form.submit()">
@@ -125,6 +141,20 @@
 </div>
 
 <script>
+
+    document.querySelector('#status-filter').addEventListener('change', function() {
+        const status = this.value;
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('status', status);
+        window.location.href = currentUrl.toString();
+    });
+
+    function updateExcludeFlaky(checkbox) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('excludeFlaky', checkbox.checked);
+        window.location.href = currentUrl.toString();
+    }
+
     // Event listener to handle status filter change
     document.querySelector('#status-filter').addEventListener('change', function() {
         const status = this.value;

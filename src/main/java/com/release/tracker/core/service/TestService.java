@@ -1,17 +1,17 @@
 package com.release.tracker.core.service;
 
 import com.release.tracker.core.enums.TestStatus;
+import com.release.tracker.db.dto.LastSuccessfulTestDto;
 import com.release.tracker.db.entity.TestEntity;
 import com.release.tracker.db.entity.TestSuite;
 import com.release.tracker.db.repository.TestRepository;
 import com.release.tracker.db.repository.TestSuiteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,17 +50,14 @@ public class TestService {
 
         if (excludeFlaky) {
             tests = tests.stream()
-                    .filter(test -> !test.isFlaky()) // assuming getFlaky() or isFlaky() is available
+                    .filter(test -> !test.isFlaky())
                     .collect(Collectors.toList());
         }
 
-        Comparator<TestEntity> comparator = Comparator.comparing(test -> {
-            switch (test.getStatus()) {
-                case FAILED: return 0;
-                case MITIGATED: return 1;
-                case PASSED: return 2;
-                default: return 3;
-            }
+        Comparator<TestEntity> comparator = Comparator.comparing(test -> switch (test.getStatus()) {
+            case FAILED -> 0;
+            case MITIGATED -> 1;
+            case PASSED -> 2;
         });
 
         if ("desc".equalsIgnoreCase(sort)) {
@@ -69,8 +66,17 @@ public class TestService {
 
         tests.sort(comparator);
 
+        int total = tests.size();
+        if (total == 0) {
+            return Collections.emptyList();
+        }
+
+        int totalPages = (int) Math.ceil((double) total / size);
+        page = Math.max(0, Math.min(page, totalPages - 1));
+
         int start = page * size;
-        int end = Math.min(start + size, tests.size());
+        int end = Math.min(start + size, total);
+
         return tests.subList(start, end);
     }
 
@@ -124,5 +130,11 @@ public class TestService {
         }
 
         testSuiteRepository.save(latest); // Assuming cascade saves the tests
+    }
+
+    public List<LastSuccessfulTestDto> getLast3SuccessfulTests(String serviceName, String testName) {
+        Pageable pageable = PageRequest.of(0, 3);
+
+        return testRepository.findLast3SuccessfulTests(serviceName, testName, pageable).getContent();
     }
 }
