@@ -131,6 +131,31 @@
                         <label class="form-label fw-bold">Description:</label>
                         <div class="description-container" th:utext="${test.description != null ? test.description.replace('\n', '<br>') : 'N/A'}"></div>
                     </div>
+                    <!-- Button to trigger Check History -->
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-info check-history-btn"
+                                th:id="'checkHistoryBtn-' + ${test.id}"
+                                th:data-test-id="${test.id}"
+                                th:data-service-name="${testSuite.service.serviceName}"
+                                th:data-test-name="${test.name}">Check History</button>
+
+                    </div>
+                    <div th:each="test : ${tests}" class="history-table-container"
+                         th:id="'historyTableContainer-' + ${test.id}" style="display: none;">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>Release</th>
+                                <th>Regression</th>
+                                <th>Last Successful Date</th>
+                            </tr>
+                            </thead>
+                            <tbody th:id="'historyTableBody-' + ${test.id}">
+                            <!-- Data will be populated dynamically with JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -162,6 +187,43 @@
         currentUrl.searchParams.set('status', status);
         window.location.href = currentUrl.toString(); // Redirect with updated query
     });
+
+
+    document.addEventListener('click', function(event) {
+    if (event.target && event.target.matches('.check-history-btn')) {
+        // Retrieve the test ID from the data attribute
+        const serviceName = event.target.getAttribute('data-service-name');
+        const testName = event.target.getAttribute('data-test-name');
+        const testId = event.target.getAttribute('data-test-id');
+        console.log(serviceName, testName, testId);
+
+        // Get the container and table body elements for the specific testId
+        const historyTableContainer = document.getElementById('historyTableContainer-' + testId);
+        const historyTableBody = document.getElementById('historyTableBody-' + testId);
+
+        if (!historyTableContainer) {
+            console.error("History table container not found for testId:", testId);
+            return;
+        }
+
+        if (!historyTableBody) {
+            console.error("History table body not found for testId:", testId);
+            return;
+        }
+
+        // Show the history table container
+        historyTableContainer.style.display = 'block';
+
+        // Make an AJAX request to fetch the history data
+        fetch(`/api/tests/check-last-successful-run?serviceName=${serviceName}&testName=${testName}&testId=${testId}`, { method: 'POST' })
+            .then(response => response.text())
+            .then(html => {
+                // Insert the history data into the table body
+                historyTableBody.innerHTML = html;
+            });
+    }
+});
+
 </script>
 </body>
 </html>

@@ -2,6 +2,7 @@ package com.release.tracker.core.service;
 
 import com.release.tracker.core.enums.TestStatus;
 import com.release.tracker.db.dto.LastSuccessfulTestDto;
+import com.release.tracker.db.dto.LastSuccessfulTestView;
 import com.release.tracker.db.entity.TestEntity;
 import com.release.tracker.db.entity.TestSuite;
 import com.release.tracker.db.repository.TestRepository;
@@ -132,9 +133,17 @@ public class TestService {
         testSuiteRepository.save(latest); // Assuming cascade saves the tests
     }
 
-    public List<LastSuccessfulTestDto> getLast3SuccessfulTests(String serviceName, String testName) {
-        Pageable pageable = PageRequest.of(0, 3);
+    public List<LastSuccessfulTestDto> getLastSuccessfulTests(String serviceName, String testName) {
+        List<LastSuccessfulTestView> rawResults =
+                testRepository.findLast3SuccessfulTestsNative(serviceName, testName);
 
-        return testRepository.findLast3SuccessfulTests(serviceName, testName, pageable).getContent();
+        // Optionally convert to DTOs
+        return rawResults.stream()
+                .map(view -> new LastSuccessfulTestDto(
+                        view.getReleaseName(),
+                        view.getTestSuiteName(),
+                        view.getStartDate()))
+                .collect(Collectors.toList());
     }
+
 }
