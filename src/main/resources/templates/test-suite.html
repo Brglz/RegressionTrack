@@ -61,7 +61,6 @@
         if (runButton) {
             runButton.addEventListener('click', function () {
                 const url = this.getAttribute('data-url');
-                console.log('Navigating to:', url);
                 // Trigger regression run
                 fetch(url, { method: 'GET' })
                     .then(response => {

@@ -1,16 +1,13 @@
 package com.release.tracker.web.controller;
 
 import com.release.tracker.core.enums.TestStatus;
+import com.release.tracker.core.service.ServiceService;
 import com.release.tracker.core.service.TestService;
-import com.release.tracker.core.service.TestSuiteService;
 import com.release.tracker.db.entity.TestEntity;
-import com.release.tracker.db.entity.TestSuite;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.util.List;
 import java.util.UUID;
 
 @Controller
@@ -20,11 +17,21 @@ public class TestController {
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private ServiceService serviceService;
+
     @PostMapping("/{id}/status")
     public String updateTestStatus(@PathVariable UUID id, @RequestParam("status") String status) {
         testService.updateTestStatus(id, TestStatus.valueOf(status));
         TestEntity test = testService.getTestById(id);
         return "redirect:/test-suites/" + test.getTestSuite().getId() + "/tests";
+    }
+
+    @PostMapping("/mark-flaky")
+    public String markFlakyTests(@RequestParam UUID serviceId) {
+        testService.markFlakyTests(serviceId);
+
+        return "redirect:/services/" + serviceId + "/test-suites";
     }
 
 }

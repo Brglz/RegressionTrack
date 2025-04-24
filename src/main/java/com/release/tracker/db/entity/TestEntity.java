@@ -29,4 +29,7 @@ public class TestEntity {
     @Enumerated(EnumType.STRING)
     private TestStatus status;
 
+    @Column(name = "is_flaky")
+    private boolean isFlaky;
+
 }

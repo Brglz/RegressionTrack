@@ -37,21 +37,26 @@ public class TestSuiteController {
             @RequestParam(required = false) String status,
             @RequestParam(required = false, defaultValue = "asc") String sort,
             @RequestParam(required = false, defaultValue = "0") int page,
-            @RequestParam(required = false, defaultValue = "20") int size) {
+            @RequestParam(required = false, defaultValue = "20") int size,
+            @RequestParam(required = false, defaultValue = "false") boolean excludeFlaky) {
 
-        List<TestEntity> tests = testService.getTestsByTestSuiteId(id, search, status, sort, page, size);
-        int totalTests = testService.getTotalTestsCount(id, search, status);
+        List<TestEntity> tests = testService.getTestsByTestSuiteId(id, search, status, sort, page, size, excludeFlaky);
+        int totalTests = testService.getTotalTestsCount(id, search, status, excludeFlaky);
+        TestSuite testSuite = testSuiteService.getTestSuiteById(id);
 
         ModelAndView modelAndView = new ModelAndView("test");
         modelAndView.addObject("tests", tests);
-        modelAndView.addObject("testSuite", testSuiteService.getTestSuiteById(id));
+        modelAndView.addObject("testSuite", testSuite);
+        modelAndView.addObject("serviceId", testSuite.getService().getId());
         modelAndView.addObject("search", search);
         modelAndView.addObject("status", status);
         modelAndView.addObject("sort", sort);
+        modelAndView.addObject("excludeFlaky", excludeFlaky);
         modelAndView.addObject("currentPage", page);
         modelAndView.addObject("totalPages", (int) Math.ceil((double) totalTests / size));
 
         return modelAndView;
     }
+
 
 }

@@ -38,7 +38,7 @@
             <td th:with="completed=${release.services != null} ? ${release.services.?[#this.status.name() == 'COMPLETED'].size()} : 0,
                              total=${release.services != null} ? ${release.services.size()} : 0,
                              serviceNames=${release.services != null and not #lists.isEmpty(release.services)} ? ${#strings.listJoin(release.services.![serviceName], ', ')} : 'None'"
-                th:attr="data-bs-toggle='tooltip',data-bs-title=${serviceNames}">
+                th:attr="data-bs-toggle='tooltip', data-bs-placement='bottom', data-bs-title=${serviceNames}">
                 <span th:text="${completed} + '/' + ${total} + ' services'"></span>
             </td>
             <td>
@@ -102,12 +102,12 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-            new bootstrap.Tooltip(tooltipTriggerEl);
-        });
-    });
+<!--    document.addEventListener('DOMContentLoaded', function () {-->
+<!--        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));-->
+<!--        tooltipTriggerList.forEach(function (tooltipTriggerEl) {-->
+<!--            new bootstrap.Tooltip(tooltipTriggerEl);-->
+<!--        });-->
+<!--    });-->
 </script>
 </body>
 </html>
