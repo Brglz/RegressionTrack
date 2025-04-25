@@ -8,18 +8,21 @@ import com.release.tracker.db.entity.TestSuite;
 import com.release.tracker.db.repository.ReleaseRepository;
 import com.release.tracker.db.repository.ServiceRepository;
 import com.release.tracker.db.repository.TestSuiteRepository;
+import com.release.tracker.downstream.resource.JobResource;
+import com.release.tracker.downstream.resource.PipelineResource;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
 @Service
 public class ServiceService {
+    private static final String NBX_RESTTEST_ID = "1751";
+
     private final ServiceRepository serviceRepository;
 
     private final ReleaseRepository releaseRepository;
@@ -27,6 +30,9 @@ public class ServiceService {
     private final TestSuiteRepository testSuiteRepository;
 
     private final RegressionSimulatorService regressionSimulatorService;
+
+    @Autowired
+    private GitlabService gitlabService;
 
     @Autowired
     public ServiceService(ServiceRepository serviceRepository, ReleaseRepository releaseRepository,
@@ -61,6 +67,7 @@ public class ServiceService {
     public void createServiceForRelease(UUID releaseId, String serviceName, String version, String status) {
         Release release = releaseRepository.findById(releaseId)
                 .orElseThrow(() -> new IllegalArgumentException("Release not found"));
+
         ServiceEntity service = new ServiceEntity();
         service.setId(UUID.randomUUID());
         service.setServiceName(serviceName);
@@ -75,13 +82,18 @@ public class ServiceService {
         ServiceEntity service = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new IllegalArgumentException("Service not found"));
 
+        PipelineResource pipeline = gitlabService.createPipeline(NBX_RESTTEST_ID);
+
         TestSuite testSuite = new TestSuite();
         testSuite.setId(UUID.randomUUID());
-        testSuite.setName("Regression_" + LocalDate.now());
-        testSuite.setStartDate(LocalDateTime.now());
+        testSuite.setName(pipeline.getName() + LocalDate.now());
+        testSuite.setStartDate(pipeline.getCreatedAt());
         testSuite.setService(service);
         testSuite.setStatus(TestSuiteStatus.IN_PROGRESS);
+        testSuite.setPipelineId(pipeline.getId());
         testSuiteRepository.save(testSuite);
+
+        gitlabService.runJob("1751", pipeline.getJobByName(service.getServiceName()).getId());
 
         // Trigger async test simulation
         regressionSimulatorService.simulateTestRun(testSuite.getId());

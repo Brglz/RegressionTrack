@@ -32,4 +32,7 @@ public class TestSuite {
 
     @Column(name = "start_date")
     private LocalDateTime startDate;
+
+    @Column(name = "pipeline_id")
+    private String pipelineId;
 }

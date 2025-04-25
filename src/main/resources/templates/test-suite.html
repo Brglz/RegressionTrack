@@ -21,7 +21,7 @@
                     <span th:if="${sort == 'asc'}">&#9650;</span>
                 </a>
             </th>
-            <th>Passed/Mitigated</th>
+            <th>Failed</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
@@ -33,7 +33,7 @@
             <td th:with="passed=${testSuite.tests != null ? testSuite.tests.?[#this.status.name() == 'PASSED'].size() : 0},
                          mitigated=${testSuite.tests != null ? testSuite.tests.?[#this.status.name() == 'MITIGATED'].size() : 0},
                          total=${testSuite.tests != null ? testSuite.tests.size() : 0}"
-                th:text="${passed + mitigated} + '/' + ${total}"></td>
+                th:text="${total - (passed + mitigated)} + '/' + ${total}"></td>
             <td>
                 <form th:action="@{/api/test-suites/{id}/status(id=${testSuite.id})}" method="post" onclick="event.stopPropagation()">
                     <select name="status" th:class="${testSuite.status.toString().toLowerCase()}" onchange="this.form.submit()">

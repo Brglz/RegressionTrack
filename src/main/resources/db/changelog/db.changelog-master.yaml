@@ -63,6 +63,9 @@ databaseChangeLog:
               - column:
                   name: start_date
                   type: datetime
+              - column:
+                  name: pipeline_id
+                  type: varchar(255)
         - createTable:
             tableName: test
             columns:
@@ -180,6 +183,9 @@ databaseChangeLog:
               - column:
                   name: start_date
                   value: "2025-04-01 00:00:00"
+              - column:
+                  name: pipeline_id
+                  value: "12345"
         - insert:
             tableName: test
             columns:
