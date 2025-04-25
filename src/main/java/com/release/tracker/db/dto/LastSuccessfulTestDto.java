@@ -12,5 +12,6 @@ import java.time.LocalDateTime;
 public class LastSuccessfulTestDto {
     private String releaseName;
     private String testSuiteName;
-    private LocalDateTime lastSuccessDate;
+    private String lastSuccessDate;
+//    private LocalDateTime lastSuccessDate;
 }

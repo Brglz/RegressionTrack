@@ -131,6 +131,7 @@
                         <label class="form-label fw-bold">Description:</label>
                         <div class="description-container" th:utext="${test.description != null ? test.description.replace('\n', '<br>') : 'N/A'}"></div>
                     </div>
+
                     <!-- Button to trigger Check History -->
                     <div class="mb-3">
                         <button type="button" class="btn btn-info check-history-btn"
@@ -138,9 +139,10 @@
                                 th:data-test-id="${test.id}"
                                 th:data-service-name="${testSuite.service.serviceName}"
                                 th:data-test-name="${test.name}">Check History</button>
-
                     </div>
-                    <div th:each="test : ${tests}" class="history-table-container"
+
+                    <!-- Unique History Table Container per Test -->
+                    <div class="history-table-container"
                          th:id="'historyTableContainer-' + ${test.id}" style="display: none;">
                         <table class="table table-striped">
                             <thead>
@@ -166,7 +168,6 @@
 </div>
 
 <script>
-
     document.querySelector('#status-filter').addEventListener('change', function() {
         const status = this.value;
         const currentUrl = new URL(window.location.href);
@@ -180,50 +181,42 @@
         window.location.href = currentUrl.toString();
     }
 
-    // Event listener to handle status filter change
-    document.querySelector('#status-filter').addEventListener('change', function() {
-        const status = this.value;
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('status', status);
-        window.location.href = currentUrl.toString(); // Redirect with updated query
-    });
-
-
     document.addEventListener('click', function(event) {
-    if (event.target && event.target.matches('.check-history-btn')) {
-        // Retrieve the test ID from the data attribute
-        const serviceName = event.target.getAttribute('data-service-name');
-        const testName = event.target.getAttribute('data-test-name');
-        const testId = event.target.getAttribute('data-test-id');
-        console.log(serviceName, testName, testId);
+        if (event.target && event.target.matches('.check-history-btn')) {
+            const button = event.target;
 
-        // Get the container and table body elements for the specific testId
-        const historyTableContainer = document.getElementById('historyTableContainer-' + testId);
-        const historyTableBody = document.getElementById('historyTableBody-' + testId);
+            const serviceName = button.getAttribute('data-service-name');
+            const testName = button.getAttribute('data-test-name');
+            const testId = button.getAttribute('data-test-id');
 
-        if (!historyTableContainer) {
-            console.error("History table container not found for testId:", testId);
-            return;
-        }
+            const containerId = 'historyTableContainer-' + testId;
+            const bodyId = 'historyTableBody-' + testId;
 
-        if (!historyTableBody) {
-            console.error("History table body not found for testId:", testId);
-            return;
-        }
+            // Hide all other containers
+            document.querySelectorAll('.history-table-container').forEach(container => {
+                container.style.display = 'none';
+            });
 
-        // Show the history table container
-        historyTableContainer.style.display = 'block';
+            const historyTableContainer = document.getElementById(containerId);
+            const historyTableBody = document.getElementById(bodyId);
 
-        // Make an AJAX request to fetch the history data
-        fetch(`/api/tests/check-last-successful-run?serviceName=${serviceName}&testName=${testName}&testId=${testId}`, { method: 'POST' })
+            if (!historyTableContainer || !historyTableBody) {
+                console.error("Missing history container/table for testId:", testId);
+                return;
+            }
+
+            historyTableBody.innerHTML = '';
+            historyTableContainer.style.display = 'block';
+
+            fetch(`/api/tests/check-last-successful-run?serviceName=${serviceName}&testName=${testName}&testId=${testId}`, {
+                method: 'POST'
+            })
             .then(response => response.text())
             .then(html => {
-                // Insert the history data into the table body
                 historyTableBody.innerHTML = html;
             });
-    }
-});
-
+        }
+    });
 </script>
 </body>
 </html>

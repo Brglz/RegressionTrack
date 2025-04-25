@@ -1,0 +1,18 @@
+<!-- fragments/history-table-rows.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:if="${#lists.isEmpty(successfulTests)}">
+    <tr>
+        <td colspan="3" class="text-muted">No successful test runs found.</td>
+    </tr>
+</th:block>
+<th:block th:each="test : ${successfulTests}">
+    <tr>
+        <td th:text="${test.releaseName}"></td>
+        <td th:text="${test.testSuiteName}"></td>
+        <td th:text="${test.lastSuccessDate}"></td>
+    </tr>
+</th:block>
+</body>
+</html>

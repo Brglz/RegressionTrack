@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -137,12 +138,13 @@ public class TestService {
         List<LastSuccessfulTestView> rawResults =
                 testRepository.findLast3SuccessfulTestsNative(serviceName, testName);
 
-        // Optionally convert to DTOs
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
         return rawResults.stream()
                 .map(view -> new LastSuccessfulTestDto(
                         view.getReleaseName(),
                         view.getTestSuiteName(),
-                        view.getStartDate()))
+                        view.getStartDate().format(formatter)))
                 .collect(Collectors.toList());
     }
 

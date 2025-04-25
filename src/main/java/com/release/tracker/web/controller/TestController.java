@@ -7,6 +7,7 @@ import com.release.tracker.db.dto.LastSuccessfulTestDto;
 import com.release.tracker.db.entity.TestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
@@ -51,29 +52,40 @@ public class TestController {
 //        return modelAndView;  // Return the ModelAndView to be rendered
 //    }
 
+//    @PostMapping("/check-last-successful-run")
+//    @ResponseBody
+//    public String checkLastSuccessfulRun(@RequestParam String serviceName,
+//                                         @RequestParam String testName,
+//                                         @RequestParam String testId) {
+//
+//        List<LastSuccessfulTestDto> successfulTests = testService.getLastSuccessfulTests(serviceName, testName);
+//
+//        if (successfulTests.isEmpty()) {
+//            return "<tr><td colspan='3' class='text-muted'>No successful test runs found.</td></tr>";
+//        }
+//
+//        StringBuilder sb = new StringBuilder();
+//        for (LastSuccessfulTestDto dto : successfulTests) {
+//            sb.append("<tr>")
+//                    .append("<td>").append(dto.getReleaseName()).append("</td>")
+//                    .append("<td>").append(dto.getTestSuiteName()).append("</td>")
+//                    .append("<td>").append(dto.getLastSuccessDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).append("</td>")
+//                    .append("</tr>");
+//        }
+//
+//        return sb.toString();
+//    }
+
     @PostMapping("/check-last-successful-run")
-    @ResponseBody
     public String checkLastSuccessfulRun(@RequestParam String serviceName,
                                          @RequestParam String testName,
-                                         @RequestParam String testId) {
-
+                                         @RequestParam String testId,
+                                         Model model) {
         List<LastSuccessfulTestDto> successfulTests = testService.getLastSuccessfulTests(serviceName, testName);
-
-        if (successfulTests.isEmpty()) {
-            return "<tr><td colspan='3' class='text-muted'>No successful test runs found.</td></tr>";
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (LastSuccessfulTestDto dto : successfulTests) {
-            sb.append("<tr>")
-                    .append("<td>").append(dto.getReleaseName()).append("</td>")
-                    .append("<td>").append(dto.getTestSuiteName()).append("</td>")
-                    .append("<td>").append(dto.getLastSuccessDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))).append("</td>")
-                    .append("</tr>");
-        }
-
-        return sb.toString();
+        model.addAttribute("successfulTests", successfulTests);
+        return "fragments/history-table-rows :: body";
     }
+
 
 
 }
