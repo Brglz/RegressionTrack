@@ -93,7 +93,7 @@ public class ServiceService {
         testSuite.setPipelineId(pipeline.getId());
         testSuiteRepository.save(testSuite);
 
-        gitlabService.runJob("1751", pipeline.getJobByName(service.getServiceName()).getId());
+        gitlabService.runJob("1751", pipeline.getJobByName(service.getServiceName()).getId()); //stel assuming that pipeline creation returns the jobs too
 
         // Trigger async test simulation
         regressionSimulatorService.simulateTestRun(testSuite.getId());
