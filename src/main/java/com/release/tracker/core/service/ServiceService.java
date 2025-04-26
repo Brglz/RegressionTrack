@@ -94,7 +94,7 @@ public class ServiceService {
         testSuite.setService(service);
         testSuite.setStatus(TestSuiteStatus.IN_PROGRESS);
 //        testSuite.setPipelineId(pipeline.getId());
-        testSuite.setPipelineId("12345");
+        testSuite.setPipelineId("3430885");
         testSuiteRepository.save(testSuite);
 
 //        gitlabService.runJob("1751", pipeline.getJobByName(service.getServiceName()).getId()); //stel assuming that pipeline creation returns the jobs too

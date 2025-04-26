@@ -50,6 +50,8 @@
                         <button type="submit" class="btn btn-warning btn-sm">Restart</button>
                     </form>
 
+                    <a th:href="'https://gitlab.paysafe.cloud/paysafe/ies/netbanx-platform/nbx-resttest/-/pipelines/' + ${testSuite.pipelineId} + '/test_report?job_name=resttest-' + ${service.serviceName} + '-qa-mon-regression'" target="_blank" class="btn btn-info btn-sm">Check Pipeline</a>
+
                     <a th:href="@{/test-suites/{id}/tests(id=${testSuite.id})}" class="btn btn-primary btn-sm">View Tests</a>
                 </div>
             </td>
