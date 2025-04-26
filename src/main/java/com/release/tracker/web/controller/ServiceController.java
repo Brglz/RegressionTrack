@@ -54,6 +54,12 @@ public class ServiceController {
         return "redirect:/services/" + id + "/test-suites";
     }
 
+    @PostMapping("/service/{serviceId}/test-suite/{testSuiteId}/restart")
+    public String restartTestSuite(@PathVariable UUID serviceId, @PathVariable UUID testSuiteId) {
+        serviceService.restartTestSuite(testSuiteId);
+        return "redirect:/services/" + serviceId + "/test-suites";
+    }
+
     @PostMapping("/api/test-suites/{id}/status")
     public String updateTestSuiteStatus(@PathVariable UUID id, @RequestParam String status) {
         serviceService.updateTestSuiteStatus(id, TestSuiteStatus.valueOf(status));

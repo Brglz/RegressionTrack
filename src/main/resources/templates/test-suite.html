@@ -45,7 +45,13 @@
                 </form>
             </td>
             <td>
-                <a th:href="@{/test-suites/{id}/tests(id=${testSuite.id})}" class="btn btn-primary btn-sm">View Tests</a>
+                <div class="d-flex gap-2">
+                    <form th:action="@{/service/{serviceId}/test-suite/{testSuiteId}/restart(serviceId=${service.id}, testSuiteId=${testSuite.id})}" method="post" th:onsubmit="return confirm('This will restart the gitlab job and will overwrite the tests here. Are you sure you want to restart this test suite?')">
+                        <button type="submit" class="btn btn-warning btn-sm">Restart</button>
+                    </form>
+
+                    <a th:href="@{/test-suites/{id}/tests(id=${testSuite.id})}" class="btn btn-primary btn-sm">View Tests</a>
+                </div>
             </td>
         </tr>
         </tbody>

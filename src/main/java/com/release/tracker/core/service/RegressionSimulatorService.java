@@ -42,6 +42,10 @@ public class RegressionSimulatorService {
 
     @Async
     @Transactional
+    public void simulateTestRunAsync(UUID testSuiteId) {
+        simulateTestRun(testSuiteId);
+    }
+
     public void simulateTestRun(UUID testSuiteId) {
         try {
             Thread.sleep(5000); // 5-second delay

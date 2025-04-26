@@ -100,7 +100,7 @@ public class ServiceService {
 //        gitlabService.runJob("1751", pipeline.getJobByName(service.getServiceName()).getId()); //stel assuming that pipeline creation returns the jobs too
 
         // Trigger async test simulation
-        regressionSimulatorService.simulateTestRun(testSuite.getId());
+        regressionSimulatorService.simulateTestRunAsync(testSuite.getId());
     }
 
     @Transactional
@@ -129,5 +129,10 @@ public class ServiceService {
         ServiceEntity service = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new IllegalArgumentException("Service not found"));
         return service.getRelease().getId();
+    }
+
+    public void restartTestSuite(UUID id) {
+        testSuiteRepository.deleteAllByTestSuiteId(id);
+        regressionSimulatorService.simulateTestRun(id);
     }
 }
