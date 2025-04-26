@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -82,18 +83,21 @@ public class ServiceService {
         ServiceEntity service = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new IllegalArgumentException("Service not found"));
 
-        PipelineResource pipeline = gitlabService.createPipeline(NBX_RESTTEST_ID);
+//        PipelineResource pipeline = gitlabService.createPipeline(NBX_RESTTEST_ID);
 
         TestSuite testSuite = new TestSuite();
         testSuite.setId(UUID.randomUUID());
-        testSuite.setName(pipeline.getName() + LocalDate.now());
-        testSuite.setStartDate(pipeline.getCreatedAt());
+//        testSuite.setName(pipeline.getName() + "_" + LocalDate.now());
+        testSuite.setName("Regression_" + LocalDate.now());
+//        testSuite.setStartDate(pipeline.getCreatedAt());
+        testSuite.setStartDate(LocalDateTime.now());
         testSuite.setService(service);
         testSuite.setStatus(TestSuiteStatus.IN_PROGRESS);
-        testSuite.setPipelineId(pipeline.getId());
+//        testSuite.setPipelineId(pipeline.getId());
+        testSuite.setPipelineId("12345");
         testSuiteRepository.save(testSuite);
 
-        gitlabService.runJob("1751", pipeline.getJobByName(service.getServiceName()).getId()); //stel assuming that pipeline creation returns the jobs too
+//        gitlabService.runJob("1751", pipeline.getJobByName(service.getServiceName()).getId()); //stel assuming that pipeline creation returns the jobs too
 
         // Trigger async test simulation
         regressionSimulatorService.simulateTestRun(testSuite.getId());
