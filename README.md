@@ -13,8 +13,6 @@ TODO:
  when the job is ready)
   - test pipeline creation
   - test job creation
+  - test job restart
   - get the test report from the job (maybe use the created artifactory)
   - find a way to populate test table with the executed tests
-- add a way to restart test(put a button in the for each test suite) (this way if some1 wants to rerun 
-the job can do it with the button and if he wants to run a brand-new pipeline he can create a new test suite)
-- add button in test suite with link to the gitlab job/pipeline
