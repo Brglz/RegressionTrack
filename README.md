@@ -2,9 +2,7 @@
 TODO:
 
 - add authentication
-  - make it with roles ADMIN/USER
-  - make a view for changing roles of users (only admins can see it and use it)
-  - make the login like hirehub
+  - make the login/register like hirehub (to be integrated with paysafe auth)
 - make gitlab integration
   - authentication
   - map data
