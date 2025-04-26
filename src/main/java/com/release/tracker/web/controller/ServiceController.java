@@ -36,6 +36,7 @@ public class ServiceController {
         modelAndView.addObject("testSuites", testSuites);
         modelAndView.addObject("service", service);
         modelAndView.addObject("sort", sort);
+        modelAndView.addObject("releaseId", service.getRelease().getId());
         modelAndView.setViewName("test-suite");
 
         return modelAndView;
